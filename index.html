@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>808 LAB · HOBBY ROOM</title>
+  <style>
+:root{--bg:#050505;--card:#111;--card2:#181818;--text:#fff;--muted:#aaa;--line:#242424;--accent:#fff;--accentText:#050505}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.app{max-width:900px;margin:auto;padding:20px}.top{padding:8px 0 16px}h1{font-size:38px;margin:0;letter-spacing:-1px;font-weight:1000}h2{margin-top:0}p{color:var(--muted)}
+.tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:10}
+.tab{background:#151515;color:#bbb;border:1px solid #2a2a2a;border-radius:14px;padding:12px 6px;font-weight:800}.tab.active{background:var(--accent);color:var(--accentText)}
+.page{display:none}.page.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:16px}.hero{background:linear-gradient(135deg,var(--card2),var(--card))}
+input,textarea,select,button{width:100%;box-sizing:border-box;border-radius:14px;border:1px solid #333;background:#191919;color:var(--text);padding:13px;font-size:15px;margin:6px 0}
+textarea{min-height:120px;resize:vertical}button{background:var(--accent);color:var(--accentText);font-weight:900}button:active{transform:scale(.97)}.hidden{display:none}
+.post{background:var(--card2);border:1px solid #292929;border-radius:18px;padding:15px;margin-bottom:14px}.badge{display:inline-block;background:#2b2b2b;color:#ddd;border-radius:999px;padding:5px 9px;font-size:12px;margin-bottom:8px}
+.meta{color:var(--muted);font-size:13px;margin-bottom:10px}.preview{width:100%;max-height:420px;object-fit:contain;border-radius:16px;margin-top:8px;background:#050505}
+.actions{display:flex;gap:8px;margin-top:10px}.actions button{background:#262626;color:white}.comment{background:#101010;border-radius:12px;padding:9px;margin-top:7px;color:#ddd}
+.profileItem{background:var(--card2);border:1px solid #2a2a2a;border-radius:16px;padding:12px;margin-bottom:10px}
+.themeGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.themePreset{background:var(--card2);color:var(--text)}input[type=color]{height:48px;padding:4px}
+.sectionKicker{font-size:12px;font-weight:1000;letter-spacing:.12em;color:var(--muted);margin-bottom:6px}.homeHero{background:radial-gradient(circle at top left,rgba(255,255,255,.16),transparent 34%),linear-gradient(135deg,var(--card2),var(--card))}
+
+/* BandLab-ish beat studio */
+.beatStudio .studioCard{background:linear-gradient(180deg,rgba(15,28,38,.96),rgba(8,11,16,.98));border:1px solid rgba(91,225,255,.22);box-shadow:0 18px 50px rgba(0,0,0,.28)}
+.beatStudio input,.beatStudio textarea,.beatStudio select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.beatControls{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:10px}
+.beatControls button{background:linear-gradient(135deg,#34e7ff,#8c7bff);color:#031014;border:0}
+.beatTrack{display:grid;grid-template-columns:72px repeat(16,1fr);gap:5px;align-items:center;margin-bottom:8px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.075);border-radius:16px;padding:8px}
+.beatName{font-weight:900;color:#b8efff;font-size:13px}.beatStep{height:38px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);padding:0;margin:0}
+.beatStep.on{background:linear-gradient(135deg,#33f0ff,#b388ff);box-shadow:0 0 18px rgba(71,224,255,.42)}.beatStep.playing{outline:3px solid rgba(255,255,255,.65)}
+.patternBox{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;white-space:pre-wrap;font-size:12px;color:var(--muted)}
+
+/* Netflix + Watchapedia movie page */
+.movieCinema{background:radial-gradient(circle at top right,rgba(229,9,20,.25),transparent 28%),linear-gradient(180deg,#100608 0%,transparent 260px);border-radius:24px}
+.movieHeroCard{background:linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.32)),radial-gradient(circle at 85% 20%,rgba(229,9,20,.75),transparent 28%),linear-gradient(135deg,#221,#050505);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:26px;min-height:160px;margin-bottom:16px;box-shadow:0 22px 60px rgba(0,0,0,.35)}
+.movieHeroCard h2{font-size:38px;margin-bottom:4px}.movieHeroCard p{max-width:520px}.movieCinema .reviewCard{background:#141414;border:1px solid #292929}
+.movieCinema input,.movieCinema textarea{background:#0d0d0d;border:1px solid #303030}.movieCinema button{background:#e50914;color:#fff;border:0}
+.movieFeedGrid .post{background:linear-gradient(180deg,#1b1b1b,#101010);border:1px solid #303030}.movieFeedGrid .badge{background:#e50914;color:#fff}.movieFeedGrid .post h3{font-size:24px}.movieFeedGrid .post p b{color:#ff6b72}.movieFeedGrid .post .meta::before{content:"★ ";color:#ff2f6e}
+
+/* Comic gallery */
+.comicGallery .comicCard{background:linear-gradient(180deg,#151219,#0d0c10);border:1px solid rgba(255,255,255,.1)}.comicGallery input,.comicGallery textarea{background:#17141c}.comicGallery button{background:#f6e9ff;color:#16091e}.comicGallery .post{background:#17141c}.comicGallery .badge{background:#f6e9ff;color:#16091e}
+
+@media(max-width:620px){.tabs{grid-template-columns:repeat(3,1fr)}.themeGrid{grid-template-columns:repeat(2,1fr)}h1{font-size:32px}.beatControls{grid-template-columns:repeat(2,1fr)}.beatTrack{grid-template-columns:54px repeat(16,1fr);gap:3px}.beatStep{height:32px;border-radius:8px}.beatName{font-size:11px}.movieHeroCard h2{font-size:30px}.movieHeroCard{min-height:120px;padding:20px}}
+
+/* movie search engine */
+.movieSearchRow{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center}
+.movieSearchResults{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.movieResult{display:grid;grid-template-columns:72px 1fr;gap:10px;text-align:left;background:#181818!important;color:#fff!important;border:1px solid #333!important;border-radius:16px;padding:10px!important;margin:0!important}
+.movieResult img{width:72px;height:106px;object-fit:cover;border-radius:10px;background:#060606}
+.movieResult strong{display:block;font-size:15px;margin-bottom:4px}
+.movieResult small{color:#aaa;display:block;line-height:1.35}
+.moviePosterInPost{width:100%;max-height:440px;object-fit:contain;border-radius:16px;background:#050505;margin:10px 0}
+.searchStatus{color:#aaa;font-size:14px;margin-top:8px}
+@media(max-width:620px){.movieSearchRow{grid-template-columns:1fr}.movieSearchResults{grid-template-columns:1fr}}
+
+/* Naver Webtoon-ish comic page */
+.webtoonPage{background:linear-gradient(180deg,rgba(0,220,100,.14),transparent 240px);border-radius:24px}
+.webtoonHero{background:linear-gradient(135deg,#00dc64,#00b84f);color:#07140b;border-radius:24px;padding:24px;margin-bottom:16px;box-shadow:0 20px 50px rgba(0,220,100,.16)}
+.webtoonHero h2{font-size:36px;margin:0 0 6px}.webtoonHero p,.webtoonHero .sectionKicker{color:#073b1a}
+.webtoonWriteCard,.webtoonFeedCard{background:#f7fff9;color:#07140b;border:1px solid rgba(0,180,80,.24)}
+.webtoonWriteCard h2,.webtoonFeedCard h2{color:#07140b}
+.webtoonWriteCard input,.webtoonWriteCard textarea,.webtoonWriteCard select{background:#fff;color:#07140b;border:1px solid #cfeedd}
+.webtoonWriteCard button{background:#00dc64;color:#06210f;border:0}
+.webtoonPreview{width:100%;max-height:420px;object-fit:contain;border-radius:16px;margin-top:8px;background:#e8fff0}
+.webtoonGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.webtoonGrid .post{background:#fff;color:#07140b;border:1px solid #d8f2e2;border-radius:18px;overflow:hidden;padding:0}
+.webtoonGrid .post .badge{background:#00dc64;color:#06210f;margin:12px 12px 0}
+.webtoonGrid .post h3{font-size:20px;margin:10px 12px 6px;color:#07140b}
+.webtoonGrid .post .meta,.webtoonGrid .post p{margin-left:12px;margin-right:12px;color:#335241}
+.webtoonGrid .post .preview{border-radius:0;max-height:260px;background:#e8fff0}
+.webtoonGrid .post b{color:#00a949}
+.webtoonGrid .actions{margin:10px 12px}.webtoonGrid .actions button{background:#ecfff3;color:#07140b;border:1px solid #cceedd}
+.webtoonGrid .post input{width:calc(100% - 24px);margin-left:12px;margin-right:12px;background:#f7fff9;color:#07140b;border:1px solid #d8f2e2}
+.webtoonGrid .post>button{width:calc(100% - 24px);margin-left:12px;margin-right:12px;background:#00dc64;color:#06210f}
+.webtoonGrid .comment{background:#f1fff6;color:#244531;margin:7px 12px 12px}
+
+/* movie google search support */
+.movieResultActions{display:flex;gap:6px;margin-top:8px}
+.movieResultActions span{display:inline-block;background:#e50914;color:#fff;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:900}
+.movieResultActions a{display:inline-block;background:#2a2a2a;color:#fff;text-decoration:none;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:900}
+.googleMovieSearchBox{margin-top:10px;border-top:1px solid #303030;padding-top:10px}
+.googleMovieSearchBox a{display:inline-block;background:#fff;color:#111;text-decoration:none;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:900}
+@media(max-width:620px){.webtoonGrid{grid-template-columns:1fr}.webtoonHero h2{font-size:30px}}
+
+/* TMDb movie database connection */
+.tmdbKeyBox{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center}
+.smallGuide{font-size:13px;color:#aaa;margin-top:0}
+.tmdbBadge{display:inline-block;background:#01b4e4;color:#031014;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:1000;margin-right:5px}
+.tmdbRating{display:inline-block;background:#90cea1;color:#031014;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:1000}
+.movieResultActions .selectBtn{display:inline-block;background:#e50914;color:#fff;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:900}
+@media(max-width:620px){.tmdbKeyBox{grid-template-columns:1fr}}
+
+.noPoster{width:72px;height:106px;border-radius:10px;background:#060606;color:#777;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:900}
+
+/* movie poster detail + star rating */
+.starRating{display:flex;gap:4px;margin:8px 0 8px}
+.starBtn{width:auto!important;background:#242424!important;color:#555!important;border:1px solid #444!important;border-radius:10px!important;padding:8px 9px!important;font-size:22px!important;line-height:1!important}
+.starBtn.active{color:#ff2f6e!important;background:#33131e!important;border-color:#ff2f6e!important}
+.movieDetailOverlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:999;display:flex;align-items:flex-end;justify-content:center;padding:16px}
+.movieDetailOverlay.hidden{display:none}
+.movieDetailPanel{width:min(900px,100%);max-height:92vh;overflow:auto;background:#111;border:1px solid #333;border-radius:28px;padding:18px;box-shadow:0 30px 90px rgba(0,0,0,.55)}
+.closeDetailBtn{background:#2a2a2a!important;color:white!important;width:auto!important;padding:10px 14px!important;float:right}
+.movieDetailHero{display:grid;grid-template-columns:220px 1fr;gap:18px;clear:both}
+.movieDetailHero img{width:100%;border-radius:18px;background:#050505}
+.movieDetailHero h2{font-size:34px;margin:0 0 8px}
+.movieDetailMeta{color:#aaa;line-height:1.6}
+.movieDetailStats{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.movieStat{background:#231019;color:#ffcadb;border:1px solid #5a2638;border-radius:999px;padding:8px 11px;font-weight:900;font-size:13px}
+.detailButtons{display:flex;gap:8px;margin-top:12px}
+.detailButtons button{background:#e50914!important;color:#fff!important}
+.movieReviewList{margin-top:18px;border-top:1px solid #303030;padding-top:14px}
+.movieReviewItem{background:#181818;border:1px solid #303030;border-radius:16px;padding:12px;margin:10px 0}
+.moviePosterInPost{cursor:pointer}
+.movieResult img{cursor:pointer}
+@media(max-width:620px){.movieDetailHero{grid-template-columns:1fr}.movieDetailHero img{max-height:440px;object-fit:contain}.movieDetailHero h2{font-size:28px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div>
+      <h1>HOBBY ROOM</h1>
+      <p>friends · beats · movies · comics</p>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-page="home">홈</button>
+    <button class="tab" data-page="beat">비트</button>
+    <button class="tab" data-page="movie">영화</button>
+    <button class="tab" data-page="comic">만화</button>
+    <button class="tab" data-page="profile">프로필</button>
+    <button class="tab" data-page="theme">테마</button>
+  </nav>
+
+  <main>
+    <section id="home" class="page active">
+      <div class="card hero homeHero">
+        <h2>친구들 취미 피드</h2>
+        <p>비트는 밴드랩 감성, 영화는 넷플릭스/왓챠피디아 감성, 만화는 갤러리 감성.</p>
+      </div>
+      <div class="card"><h2>전체 피드</h2><div id="homeFeed"></div></div>
+    </section>
+
+    <section id="beat" class="page beatStudio">
+      <div class="card studioCard">
+        <div class="sectionKicker">BANDLAB-STYLE STUDIO</div>
+        <h2>비트 메이커</h2>
+        <p>16칸 찍어서 바로 비트 만들기. PLAY 전에 아무 칸이나 한 번 눌러서 소리 켜기.</p>
+
+        <div class="beatControls">
+          <button id="playBeatBtn">▶ PLAY</button>
+          <button id="stopBeatBtn">■ STOP</button>
+          <button id="randomBeatBtn">랜덤 비트</button>
+          <button id="clearBeatBtn">초기화</button>
+        </div>
+
+        <label>BPM: <span id="beatBpmText">120</span></label>
+        <input id="beatMakerBpm" type="range" min="60" max="190" value="120">
+
+        <div id="beatSequencer"></div>
+      </div>
+
+      <div class="card studioCard">
+        <div class="sectionKicker">DROP YOUR LOOP</div>
+        <h2>비트 게시하기</h2>
+        <input id="beatTitle" placeholder="비트 제목 / 곡 제목">
+        <input id="beatGenre" placeholder="장르 예: Trap, Boom bap, Drill">
+        <textarea id="beatBody" placeholder="비트 느낌, 좋았던 점, 아쉬운 점"></textarea>
+        <button id="beatPostBtn">비트 게시하기</button>
+      </div>
+
+      <div class="card studioCard"><h2>비트 피드</h2><div id="beatFeed"></div></div>
+    </section>
+
+    <section id="movie" class="page movieCinema">
+      <div class="movieHeroCard">
+        <div class="sectionKicker">CINEMA MODE</div>
+        <h2>영화 평론</h2>
+        <p>넷플릭스처럼 고르고, 왓챠피디아처럼 별점과 긴 평론 남기기.</p>
+      </div>
+      <div class="card reviewCard movieSearchCard">
+        <h2>영화 검색</h2>
+        <p>영화 제목을 검색하고, 결과를 누르면 포스터/정보가 자동 입력됨.</p>
+
+        <div class="movieSearchRow">
+          <input id="movieSearchInput" placeholder="예: La La Land, 기생충, Interstellar">
+          <button id="movieSearchBtn">영화 검색</button>
+        </div>
+        <div id="movieSearchResults" class="movieSearchResults"></div>
+        <div id="googleMovieSearchBox" class="googleMovieSearchBox hidden"></div>
+      </div>
+
+      <div class="card reviewCard">
+        <h2>리뷰 작성</h2>
+        <input id="movieTitle" placeholder="영화 제목">
+        <input id="movieInfo" placeholder="감독 / 배우 / 개봉연도">
+        <input id="moviePoster" placeholder="포스터 이미지 URL, 검색 결과 선택 시 자동 입력">
+        <div class="starRating" id="movieStarRating"></div>
+        <input id="movieScore" type="hidden" value="">
+        <p id="movieScoreText" class="smallGuide">별점을 선택해줘</p>
+        <textarea id="movieBody" placeholder="줄거리 요약, 연출, 음악, 배우 연기, 메시지, 좋았던 점, 아쉬운 점"></textarea>
+        <button id="moviePostBtn">영화 평론 올리기</button>
+      </div>
+      <div class="card reviewCard"><h2>영화 피드</h2><div id="movieFeed" class="movieFeedGrid"></div></div>
+    </section>
+
+    <section id="comic" class="page webtoonPage">
+      <div class="webtoonHero">
+        <div>
+          <div class="sectionKicker">WEBTOON MODE</div>
+          <h2>만화 / 웹툰</h2>
+          <p>네이버웹툰처럼 작품 카드로 보고, 회차 후기처럼 올리기.</p>
+        </div>
+      </div>
+
+      <div class="card webtoonWriteCard">
+        <h2>작품/회차 올리기</h2>
+        <input id="comicTitle" placeholder="작품 제목">
+        <input id="comicInfo" placeholder="작가 / 장르 예: 액션, 로맨스, 일상">
+        <input id="comicEpisode" placeholder="회차 예: 12화 / 시즌1 3화 / 단편">
+        <select id="comicStatus">
+          <option value="연재중">연재중</option>
+          <option value="완결">완결</option>
+          <option value="단편">단편</option>
+          <option value="추천">추천</option>
+        </select>
+        <input id="comicScore" type="number" min="0" max="10" placeholder="별점 0~10">
+        <input id="comicImage" type="file" accept="image/*">
+        <img id="comicPreview" class="webtoonPreview hidden">
+        <textarea id="comicBody" placeholder="이번 화 후기, 그림체, 컷 구성, 캐릭터, 스토리, 몰입감, 다음 화 기대점"></textarea>
+        <button id="comicPostBtn">웹툰 후기 올리기</button>
+      </div>
+
+      <div class="card webtoonFeedCard">
+        <h2>웹툰 피드</h2>
+        <div id="comicFeed" class="webtoonGrid"></div>
+      </div>
+    </section>
+
+    <section id="profile" class="page">
+      <div class="card">
+        <h2>프로필</h2>
+        <input id="profileName" placeholder="닉네임">
+        <input id="profileBio" placeholder="한줄 소개 예: 영화충 / 비트 찍는 중 / 만화러">
+        <button id="addProfileBtn">프로필 추가</button>
+        <label>현재 프로필</label>
+        <select id="profileSelect"></select>
+      </div>
+      <div class="card"><h2>프로필 목록</h2><div id="profileList"></div></div>
+    </section>
+
+    <section id="theme" class="page">
+      <div class="card">
+        <h2>테마</h2>
+        <p>전체 사이트 분위기 바꾸기. 페이지별 감성은 유지됨.</p>
+        <div class="themeGrid">
+          <button class="themePreset" data-theme="dark">Dark</button>
+          <button class="themePreset" data-theme="ocean">Ocean</button>
+          <button class="themePreset" data-theme="grape">Grape</button>
+          <button class="themePreset" data-theme="sunset">Sunset</button>
+          <button class="themePreset" data-theme="forest">Forest</button>
+        </div>
+        <h3>커스텀 테마</h3>
+        <label>배경색</label><input id="customBg" type="color" value="#050505">
+        <label>카드색</label><input id="customCard" type="color" value="#111111">
+        <label>포인트색</label><input id="customAccent" type="color" value="#ffffff">
+        <button id="applyCustomThemeBtn">커스텀 테마 적용</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="movieDetailOverlay" class="movieDetailOverlay hidden">
+  <div class="movieDetailPanel">
+    <button id="closeMovieDetailBtn" class="closeDetailBtn">닫기</button>
+    <div id="movieDetailContent"></div>
+  </div>
+</div>
+
+<script>
+let profiles = JSON.parse(localStorage.getItem("hobby_profiles") || "[]");
+let posts = JSON.parse(localStorage.getItem("hobby_posts") || "[]");
+let comicImageData = "";
+let selectedMovieData = null;
+let selectedMovieScore = 0;
+
+const $ = (id) => document.getElementById(id);
+
+const themePresets = {
+  dark: { bg:"#050505", card:"#111111", card2:"#181818", text:"#ffffff", muted:"#aaaaaa", line:"#242424", accent:"#ffffff", accentText:"#050505" },
+  ocean: { bg:"#06131f", card:"#0d2133", card2:"#12314a", text:"#f4fbff", muted:"#9fc4dc", line:"#21445f", accent:"#71d7ff", accentText:"#041018" },
+  grape: { bg:"#120817", card:"#21102b", card2:"#30183f", text:"#fff7ff", muted:"#d0a8da", line:"#472255", accent:"#e59cff", accentText:"#17051f" },
+  sunset: { bg:"#180b07", card:"#2a1510", card2:"#3a1d14", text:"#fff8f4", muted:"#e5aa91", line:"#573024", accent:"#ff9a5c", accentText:"#1d0b04" },
+  forest: { bg:"#06120b", card:"#0d2215", card2:"#143320", text:"#f3fff7", muted:"#9cc7aa", line:"#245334", accent:"#8dffae", accentText:"#041107" }
+};
+let activeTheme = JSON.parse(localStorage.getItem("hobby_theme") || "null") || themePresets.dark;
+
+const tabs = document.querySelectorAll(".tab");
+const pages = document.querySelectorAll(".page");
+
+const profileName = $("profileName");
+const profileBio = $("profileBio");
+const addProfileBtn = $("addProfileBtn");
+const profileSelect = $("profileSelect");
+const profileList = $("profileList");
+
+const beatTitle = $("beatTitle");
+const beatGenre = $("beatGenre");
+const beatBody = $("beatBody");
+const beatPostBtn = $("beatPostBtn");
+const beatSequencer = $("beatSequencer");
+const playBeatBtn = $("playBeatBtn");
+const stopBeatBtn = $("stopBeatBtn");
+const randomBeatBtn = $("randomBeatBtn");
+const clearBeatBtn = $("clearBeatBtn");
+const beatMakerBpm = $("beatMakerBpm");
+const beatBpmText = $("beatBpmText");
+
+const movieSearchInput = $("movieSearchInput");
+const movieSearchBtn = $("movieSearchBtn");
+const movieSearchResults = $("movieSearchResults");
+const googleMovieSearchBox = $("googleMovieSearchBox");
+const movieTitle = $("movieTitle");
+const movieInfo = $("movieInfo");
+const moviePoster = $("moviePoster");
+const movieScore = $("movieScore");
+const movieStarRating = $("movieStarRating");
+const movieScoreText = $("movieScoreText");
+const movieDetailOverlay = $("movieDetailOverlay");
+const movieDetailContent = $("movieDetailContent");
+const closeMovieDetailBtn = $("closeMovieDetailBtn");
+const movieBody = $("movieBody");
+const moviePostBtn = $("moviePostBtn");
+
+const comicTitle = $("comicTitle");
+const comicInfo = $("comicInfo");
+const comicEpisode = $("comicEpisode");
+const comicStatus = $("comicStatus");
+const comicScore = $("comicScore");
+const comicImage = $("comicImage");
+const comicPreview = $("comicPreview");
+const comicBody = $("comicBody");
+const comicPostBtn = $("comicPostBtn");
+
+const homeFeed = $("homeFeed");
+const beatFeed = $("beatFeed");
+const movieFeed = $("movieFeed");
+const comicFeed = $("comicFeed");
+
+const applyCustomThemeBtn = $("applyCustomThemeBtn");
+const customBg = $("customBg");
+const customCard = $("customCard");
+const customAccent = $("customAccent");
+
+function escapeHtml(text) {
+  return String(text || "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+}
+function save() {
+  localStorage.setItem("hobby_profiles", JSON.stringify(profiles));
+  localStorage.setItem("hobby_posts", JSON.stringify(posts));
+}
+function currentProfile() {
+  return profileSelect.value || "익명";
+}
+function applyTheme(theme) {
+  activeTheme = theme;
+  Object.entries(theme).forEach(([key, value]) => {
+    document.documentElement.style.setProperty("--" + key, value);
+  });
+  localStorage.setItem("hobby_theme", JSON.stringify(theme));
+}
+
+tabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    tabs.forEach((t) => t.classList.remove("active"));
+    pages.forEach((p) => p.classList.remove("active"));
+    tab.classList.add("active");
+    $(tab.dataset.page).classList.add("active");
+  });
+});
+
+addProfileBtn.onclick = () => {
+  const name = profileName.value.trim();
+  const bio = profileBio.value.trim();
+  if (!name) return alert("닉네임을 입력해줘");
+  profiles.push({ id: Date.now(), name, bio });
+  profileName.value = "";
+  profileBio.value = "";
+  save();
+  renderProfiles();
+};
+
+function deleteProfile(id) {
+  profiles = profiles.filter((p) => p.id !== id);
+  save();
+  renderProfiles();
+}
+
+function renderProfiles() {
+  profileSelect.innerHTML = "";
+  if (profiles.length === 0) {
+    profileSelect.innerHTML = `<option value="">프로필을 먼저 추가해줘</option>`;
+    profileList.innerHTML = `<p>아직 프로필이 없음.</p>`;
+    return;
+  }
+  profiles.forEach((p) => {
+    const opt = document.createElement("option");
+    opt.value = p.name;
+    opt.textContent = p.name;
+    profileSelect.appendChild(opt);
+  });
+  profileList.innerHTML = profiles.map((p) => `
+    <div class="profileItem">
+      <b>${escapeHtml(p.name)}</b>
+      <p>${escapeHtml(p.bio || "소개 없음")}</p>
+      <button onclick="deleteProfile(${p.id})">프로필 삭제</button>
+    </div>
+  `).join("");
+}
+
+comicImage.onchange = () => {
+  const file = comicImage.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    comicImageData = reader.result;
+    comicPreview.src = comicImageData;
+    comicPreview.classList.remove("hidden");
+  };
+  reader.readAsDataURL(file);
+};
+
+function addPost(type, title, info, score, body, image, poster, movieData) {
+  if (!currentProfile() || currentProfile() === "익명") return alert("프로필을 먼저 만들어줘");
+  if (!title.trim()) return alert("제목을 입력해줘");
+  if (!body.trim()) return alert("내용을 입력해줘");
+  posts.unshift({
+    id: Date.now(),
+    type,
+    profile: currentProfile(),
+    title: title.trim(),
+    info: info.trim(),
+    score: score ? String(score).trim() : "",
+    body: body.trim(),
+    image: image || "",
+    poster: poster || "",
+    movieData: movieData || null,
+    likes: 0,
+    comments: [],
+    createdAt: new Date().toLocaleString()
+  });
+  save();
+  renderAllFeeds();
+}
+
+beatPostBtn.onclick = () => {
+  const patternText = getPatternText();
+  const info = [beatGenre.value, beatMakerBpm.value + " BPM"].filter(Boolean).join(" · ");
+  const body = beatBody.value + "\n\n[패턴]\n" + patternText;
+  addPost("beat", beatTitle.value, info, "", body, "");
+  beatTitle.value = beatGenre.value = beatBody.value = "";
+};
+
+moviePostBtn.onclick = () => {
+  addPost("movie", movieTitle.value, movieInfo.value, movieScore.value, movieBody.value, "", moviePoster.value, selectedMovieData);
+  movieTitle.value = movieInfo.value = moviePoster.value = movieBody.value = "";
+  selectedMovieData = null;
+  selectedMovieScore = 0;
+  renderStars();
+};
+
+comicPostBtn.onclick = () => {
+  const comicMeta = [comicInfo.value, comicEpisode.value, comicStatus.value].filter(Boolean).join(" · ");
+  addPost("comic", comicTitle.value, comicMeta, comicScore.value, comicBody.value, comicImageData);
+  comicTitle.value = comicInfo.value = comicEpisode.value = comicScore.value = comicBody.value = "";
+  comicImage.value = "";
+  comicImageData = "";
+  comicPreview.src = "";
+  comicPreview.classList.add("hidden");
+};
+
+function typeLabel(type) {
+  if (type === "beat") return "BEAT";
+  if (type === "movie") return "MOVIE";
+  if (type === "comic") return "COMIC";
+  return "POST";
+}
+function likePost(id) {
+  posts = posts.map((p) => p.id === id ? { ...p, likes: p.likes + 1 } : p);
+  save();
+  renderAllFeeds();
+}
+function deletePost(id) {
+  posts = posts.filter((p) => p.id !== id);
+  save();
+  renderAllFeeds();
+}
+function addComment(id) {
+  const input = $("comment-" + id);
+  const text = input.value.trim();
+  if (!text) return;
+  posts = posts.map((p) => {
+    if (p.id === id) p.comments.push({ profile: currentProfile(), text });
+    return p;
+  });
+  save();
+  renderAllFeeds();
+}
+function postHtml(post) {
+  const img = post.image ? `<img class="preview" src="${post.image}">` : "";
+  const poster = post.poster ? `<img class="moviePosterInPost" onclick="openMovieDetail(${post.id})" src="${escapeHtml(post.poster)}">` : "";
+  const score = post.score ? `<p><b>평점:</b> ${escapeHtml(post.score)}/10</p>` : "";
+  const info = post.info ? `<p><b>정보:</b> ${escapeHtml(post.info)}</p>` : "";
+  const comments = post.comments.map((c) => `<div class="comment"><b>${escapeHtml(c.profile)}</b>: ${escapeHtml(c.text)}</div>`).join("");
+  return `
+    <div class="post post-${post.type}">
+      <span class="badge">${typeLabel(post.type)}</span>
+      <h3>${escapeHtml(post.title)}</h3>
+      <div class="meta">by ${escapeHtml(post.profile)} · ${escapeHtml(post.createdAt)}</div>
+      ${info}
+      ${score}
+      ${poster}
+      ${img}
+      <p>${escapeHtml(post.body).replaceAll("\n", "<br>")}</p>
+      <div class="actions">
+        <button onclick="likePost(${post.id})">좋아요 ${post.likes}</button>
+        <button onclick="deletePost(${post.id})">삭제</button>
+      </div>
+      <input id="comment-${post.id}" placeholder="댓글 쓰기">
+      <button onclick="addComment(${post.id})">댓글 추가</button>
+      ${comments}
+    </div>
+  `;
+}
+function renderFeed(target, list) {
+  target.innerHTML = list.length ? list.map(postHtml).join("") : `<p>아직 게시물이 없음.</p>`;
+}
+function renderAllFeeds() {
+  renderFeed(homeFeed, posts);
+  renderFeed(beatFeed, posts.filter((p) => p.type === "beat"));
+  renderFeed(movieFeed, posts.filter((p) => p.type === "movie"));
+  renderFeed(comicFeed, posts.filter((p) => p.type === "comic"));
+}
+
+
+
+
+/* movie search engine - keyless iTunes Search API */
+function movieYear(dateText) {
+  if (!dateText) return "";
+  return String(dateText).slice(0, 4);
+}
+
+function betterPoster(url) {
+  if (!url) return "";
+  return url.replace("100x100bb", "600x600bb");
+}
+
+async function searchMovies() {
+  const q = movieSearchInput.value.trim();
+  if (!q) return alert("검색어를 입력해줘");
+
+  movieSearchResults.innerHTML = `<div class="searchStatus">영화 검색 중...</div>`;
+  googleMovieSearchBox.classList.add("hidden");
+
+  try {
+    const url = "https://itunes.apple.com/search?media=movie&country=KR&limit=12&term=" + encodeURIComponent(q);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("movie search failed");
+    const data = await res.json();
+    const results = (data.results || []).filter((item) => item.trackName);
+
+    if (results.length === 0) {
+      movieSearchResults.innerHTML = `<div class="searchStatus">검색 결과가 없음.</div>`;
+      const googleSearchUrl = "https://www.google.com/search?q=" + encodeURIComponent(q + " 영화");
+      googleMovieSearchBox.classList.remove("hidden");
+      googleMovieSearchBox.innerHTML = `<a href="${googleSearchUrl}" target="_blank">구글에서 “${escapeHtml(q)} 영화” 검색하기</a>`;
+      return;
+    }
+
+    movieSearchResults.innerHTML = results.map((m, index) => {
+      const poster = betterPoster(m.artworkUrl100 || "");
+      const titleRaw = m.trackName || "";
+      const title = escapeHtml(titleRaw);
+      const year = escapeHtml(movieYear(m.releaseDate));
+      const genre = escapeHtml(m.primaryGenreName || "장르 정보 없음");
+      const price = m.trackPrice ? escapeHtml(String(m.trackPrice) + " " + (m.currency || "")) : "";
+      const googleUrl = "https://www.google.com/search?q=" + encodeURIComponent(titleRaw + " 영화");
+
+      return `
+        <div class="movieResult">
+          ${poster ? `<img src="${poster}" onclick="selectMovieResult(${index})" alt="">` : `<div class="noPoster">NO<br>POSTER</div>`}
+          <span>
+            <strong>${title}</strong>
+            <small>${year} · ${genre}</small>
+            <small>${price}</small>
+            <span class="movieResultActions">
+              <span class="selectBtn" onclick="selectMovieResult(${index})">선택</span>
+              <a href="${googleUrl}" target="_blank">구글</a>
+            </span>
+          </span>
+        </div>
+      `;
+    }).join("");
+
+    const googleSearchUrl = "https://www.google.com/search?q=" + encodeURIComponent(q + " 영화");
+    googleMovieSearchBox.classList.remove("hidden");
+    googleMovieSearchBox.innerHTML = `<a href="${googleSearchUrl}" target="_blank">구글에서 “${escapeHtml(q)} 영화” 더 찾아보기</a>`;
+
+    window.lastMovieResults = results;
+  } catch (err) {
+    movieSearchResults.innerHTML = `<div class="searchStatus">검색 실패. 구글 검색은 가능함.</div>`;
+    const googleSearchUrl = "https://www.google.com/search?q=" + encodeURIComponent(q + " 영화");
+    googleMovieSearchBox.classList.remove("hidden");
+    googleMovieSearchBox.innerHTML = `<a href="${googleSearchUrl}" target="_blank">구글에서 “${escapeHtml(q)} 영화” 검색하기</a>`;
+  }
+}
+
+async function selectMovieResult(index) {
+  const m = (window.lastMovieResults || [])[index];
+  if (!m) return;
+
+  const title = m.trackName || "";
+  const year = movieYear(m.releaseDate);
+  const genre = m.primaryGenreName || "";
+  const runtime = m.trackTimeMillis ? Math.round(m.trackTimeMillis / 60000) + "분" : "";
+  const poster = betterPoster(m.artworkUrl100 || "");
+  const rating = "";
+  const director = m.artistName ? "제작/배급: " + m.artistName : "";
+  const overview = m.longDescription || m.shortDescription || "";
+
+  movieTitle.value = title;
+  movieInfo.value = [year, genre, runtime, director].filter(Boolean).join(" · ");
+  moviePoster.value = poster;
+
+  selectedMovieData = {
+    tmdbId: "itunes-" + (m.trackId || title),
+    title,
+    year,
+    genres: genre,
+    runtime,
+    rating,
+    director,
+    poster,
+    overview
+  };
+
+  if (!movieBody.value.trim()) {
+    movieBody.value = (overview ? "[줄거리]\n" + overview + "\n\n" : "") + "[평론]\n";
+  }
+
+  openSelectedMoviePreview();
+  document.querySelector('[data-page="movie"]').scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+movieSearchBtn.onclick = searchMovies;
+movieSearchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") searchMovies();
+});
+
+/* 16-step beat maker */
+const drumNames = ["KICK", "SNARE", "HAT", "808"];
+const stepCount = 16;
+let beatPattern = drumNames.map(() => Array(stepCount).fill(false));
+let currentStep = 0;
+let beatTimer = null;
+let audioCtx = null;
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === "suspended") audioCtx.resume();
+}
+function playDrum(row) {
+  initAudio();
+  const type = drumNames[row];
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  const now = audioCtx.currentTime;
+  if (type === "KICK") {
+    osc.frequency.setValueAtTime(130, now);
+    osc.frequency.exponentialRampToValueAtTime(45, now + 0.13);
+    gain.gain.setValueAtTime(0.9, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+  } else if (type === "SNARE") {
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(230, now);
+    gain.gain.setValueAtTime(0.45, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+  } else if (type === "HAT") {
+    osc.type = "square";
+    osc.frequency.setValueAtTime(8000, now);
+    gain.gain.setValueAtTime(0.16, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+  } else if (type === "808") {
+    osc.frequency.setValueAtTime(58, now);
+    osc.frequency.exponentialRampToValueAtTime(38, now + 0.38);
+    gain.gain.setValueAtTime(0.75, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+  }
+  osc.start(now);
+  osc.stop(now + 0.5);
+}
+function renderBeatMaker() {
+  beatSequencer.innerHTML = "";
+  drumNames.forEach((name, row) => {
+    const track = document.createElement("div");
+    track.className = "beatTrack";
+    const label = document.createElement("div");
+    label.className = "beatName";
+    label.textContent = name;
+    track.appendChild(label);
+    for (let col = 0; col < stepCount; col++) {
+      const btn = document.createElement("button");
+      btn.className = "beatStep";
+      if (beatPattern[row][col]) btn.classList.add("on");
+      if (col === currentStep) btn.classList.add("playing");
+      btn.onclick = () => {
+        beatPattern[row][col] = !beatPattern[row][col];
+        playDrum(row);
+        renderBeatMaker();
+      };
+      track.appendChild(btn);
+    }
+    beatSequencer.appendChild(track);
+  });
+}
+function beatTick() {
+  drumNames.forEach((_, row) => {
+    if (beatPattern[row][currentStep]) playDrum(row);
+  });
+  currentStep = (currentStep + 1) % stepCount;
+  renderBeatMaker();
+}
+function startBeat() {
+  initAudio();
+  stopBeat();
+  const bpm = Number(beatMakerBpm.value);
+  const interval = (60 / bpm / 4) * 1000;
+  beatTimer = setInterval(beatTick, interval);
+}
+function stopBeat() {
+  if (beatTimer) clearInterval(beatTimer);
+  beatTimer = null;
+  currentStep = 0;
+  renderBeatMaker();
+}
+function randomBeat() {
+  beatPattern = drumNames.map((name) =>
+    Array.from({ length: stepCount }, (_, i) => {
+      if (name === "KICK") return i % 4 === 0 || Math.random() > 0.88;
+      if (name === "SNARE") return i === 4 || i === 12;
+      if (name === "HAT") return Math.random() > 0.45;
+      if (name === "808") return Math.random() > 0.78;
+      return false;
+    })
+  );
+  renderBeatMaker();
+}
+function clearBeat() {
+  beatPattern = drumNames.map(() => Array(stepCount).fill(false));
+  renderBeatMaker();
+}
+function getPatternText() {
+  return drumNames.map((name, row) => {
+    const line = beatPattern[row].map((on) => on ? "■" : "□").join("");
+    return name + " " + line;
+  }).join("\n");
+}
+playBeatBtn.onclick = startBeat;
+stopBeatBtn.onclick = stopBeat;
+randomBeatBtn.onclick = randomBeat;
+clearBeatBtn.onclick = clearBeat;
+beatMakerBpm.oninput = () => {
+  beatBpmText.textContent = beatMakerBpm.value;
+  if (beatTimer) startBeat();
+};
+
+
+/* movie poster detail + rating stats */
+function renderStars() {
+  movieStarRating.innerHTML = "";
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.createElement("button");
+    btn.className = "starBtn";
+    if (i <= selectedMovieScore) btn.classList.add("active");
+    btn.textContent = "★";
+    btn.onclick = () => {
+      selectedMovieScore = i;
+      movieScore.value = String(i * 2);
+      movieScoreText.textContent = "내 별점: " + i + "점 / 5점";
+      renderStars();
+    };
+    movieStarRating.appendChild(btn);
+  }
+}
+
+function movieKeyFromPost(post) {
+  if (post.movieData && post.movieData.tmdbId) return "tmdb:" + post.movieData.tmdbId;
+  return "title:" + (post.title || "").toLowerCase().trim();
+}
+
+function movieStatsFor(post) {
+  const key = movieKeyFromPost(post);
+  const reviews = posts.filter((p) => p.type === "movie" && movieKeyFromPost(p) === key);
+  const scores = reviews.map((p) => Number(p.score || 0)).filter((n) => n > 0);
+  const avg10 = scores.length ? scores.reduce((a,b) => a + b, 0) / scores.length : 0;
+  return { reviews, count: reviews.length, avg10 };
+}
+
+function openMovieDetail(postId) {
+  const post = posts.find((p) => p.id === postId);
+  if (!post) return;
+  const stats = movieStatsFor(post);
+  renderMovieDetail(post, stats);
+}
+
+function openSelectedMoviePreview() {
+  if (!selectedMovieData) return;
+  const fakePost = {
+    id: 0,
+    type: "movie",
+    title: selectedMovieData.title,
+    info: [selectedMovieData.year, selectedMovieData.genres, selectedMovieData.runtime, selectedMovieData.rating, selectedMovieData.director].filter(Boolean).join(" · "),
+    score: "",
+    body: selectedMovieData.overview || "아직 작성된 평론 없음.",
+    poster: selectedMovieData.poster,
+    movieData: selectedMovieData,
+    profile: currentProfile(),
+    createdAt: "선택한 영화"
+  };
+  renderMovieDetail(fakePost, { reviews: [], count: 0, avg10: 0 });
+}
+
+function renderMovieDetail(post, stats) {
+  const data = post.movieData || {};
+  const poster = post.poster || data.poster || "";
+  const title = post.title || data.title || "";
+  const info = post.info || [data.year, data.genres, data.runtime, data.rating, data.director].filter(Boolean).join(" · ");
+  const overview = data.overview || "";
+  const avg5 = stats.avg10 ? (stats.avg10 / 2).toFixed(1) : "아직 없음";
+  const reviewItems = stats.reviews.length ? stats.reviews.map((r) => `
+    <div class="movieReviewItem">
+      <b>${escapeHtml(r.profile)}</b> · ${r.score ? "★ " + escapeHtml(String(Number(r.score) / 2)) + "/5" : "별점 없음"}
+      <p>${escapeHtml(r.body).replaceAll("\n", "<br>")}</p>
+    </div>
+  `).join("") : `<p>아직 등록된 평론 없음.</p>`;
+
+  movieDetailContent.innerHTML = `
+    <div class="movieDetailHero">
+      ${poster ? `<img src="${escapeHtml(poster)}">` : `<div class="noPoster">NO<br>POSTER</div>`}
+      <div>
+        <h2>${escapeHtml(title)}</h2>
+        <div class="movieDetailMeta">${escapeHtml(info)}</div>
+        <div class="movieDetailStats">
+          <span class="movieStat">평균 ★ ${avg5}/5</span>
+          <span class="movieStat">평론 ${stats.count}개</span>
+          ${data.rating ? `<span class="movieStat">${escapeHtml(data.rating)}</span>` : ""}
+        </div>
+        ${overview ? `<p>${escapeHtml(overview)}</p>` : ""}
+        <div class="detailButtons">
+          <button onclick="movieDetailOverlay.classList.add('hidden')">평론 쓰기</button>
+        </div>
+      </div>
+    </div>
+    <div class="movieReviewList">
+      <h3>친구들 평론</h3>
+      ${reviewItems}
+    </div>
+  `;
+  movieDetailOverlay.classList.remove("hidden");
+}
+
+function closeMovieDetail() {
+  movieDetailOverlay.classList.add("hidden");
+}
+
+closeMovieDetailBtn.onclick = closeMovieDetail;
+
+movieDetailOverlay.addEventListener("click", (e) => {
+  if (e.target === movieDetailOverlay) movieDetailOverlay.classList.add("hidden");
+});
+
+
+document.querySelectorAll(".themePreset").forEach((btn) => {
+  btn.onclick = () => applyTheme(themePresets[btn.dataset.theme]);
+});
+applyCustomThemeBtn.onclick = () => {
+  const bg = customBg.value;
+  const card = customCard.value;
+  const accent = customAccent.value;
+  applyTheme({
+    bg,
+    card,
+    card2: card,
+    text: "#ffffff",
+    muted: "#aaaaaa",
+    line: "#333333",
+    accent,
+    accentText: accent.toLowerCase() === "#ffffff" ? "#050505" : "#ffffff"
+  });
+};
+
+
+window.deleteProfile = deleteProfile;
+window.likePost = likePost;
+window.deletePost = deletePost;
+window.addComment = addComment;
+window.selectMovieResult = selectMovieResult;
+window.openMovieDetail = openMovieDetail;
+window.closeMovieDetail = closeMovieDetail;
+
+applyTheme(activeTheme);
+renderProfiles();
+renderAllFeeds();
+renderBeatMaker();
+renderStars();
+</script>
+</body>
+</html>
