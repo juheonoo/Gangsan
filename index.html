@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>808 LAB · HOBBY ROOM</title>
-  <style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>808 LAB · Hobby Room</title>
+<style>
 :root{--bg:#050505;--card:#111;--card2:#181818;--text:#fff;--muted:#aaa;--line:#242424;--accent:#fff;--accentText:#050505}
 body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif}
 .app{max-width:900px;margin:auto;padding:20px}.top{padding:8px 0 16px}h1{font-size:38px;margin:0;letter-spacing:-1px;font-weight:1000}h2{margin-top:0}p{color:var(--muted)}
@@ -113,7 +113,41 @@ textarea{min-height:120px;resize:vertical}button{background:var(--accent);color:
 .moviePosterInPost{cursor:pointer}
 .movieResult img{cursor:pointer}
 @media(max-width:620px){.movieDetailHero{grid-template-columns:1fr}.movieDetailHero img{max-height:440px;object-fit:contain}.movieDetailHero h2{font-size:28px}}
-  </style>
+
+/* upgraded beat tools */
+.beatToolPanel{margin-top:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:14px}
+.sampleRow{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;margin:8px 0}
+.sampleRow b{color:#b8efff}
+.sampleRow input{margin:0}
+#recordedAudio{width:100%;margin-top:10px}
+.recordingPulse{animation:pulseRec 1s infinite}
+@keyframes pulseRec{0%{box-shadow:0 0 0 rgba(255,0,80,0)}50%{box-shadow:0 0 24px rgba(255,0,80,.45)}100%{box-shadow:0 0 0 rgba(255,0,80,0)}}
+
+
+/* BandLab V2 multitrack */
+.bandlabStudio{max-width:none}
+.studioTopbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+.studioMini{display:flex;gap:8px;flex-wrap:wrap}
+.studioMini span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 10px;color:#c9f6ff;font-size:12px;font-weight:900}
+.transportBar{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:10px;margin:10px 0}
+.transportBar button{background:linear-gradient(135deg,#34e7ff,#8c7bff);color:#031014;border:0}
+.bpmRow{display:grid;grid-template-columns:60px 1fr;gap:10px;align-items:center;margin:12px 0}.bpmRow label{color:#b8efff;font-weight:900}
+.trackToolbar{display:grid;grid-template-columns:1fr 150px;gap:8px;margin:14px 0}
+.timelineWrap{overflow-x:auto;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.2);padding:10px}
+.multiTrack{display:grid;grid-template-columns:210px repeat(64,28px);gap:4px;align-items:center;min-width:2050px;margin-bottom:8px}
+.trackHead{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:8px;min-height:60px}
+.trackHead b{display:block;color:#b8efff;margin-bottom:6px}
+.trackButtons{display:flex;gap:4px;align-items:center}.trackButtons button{width:auto!important;padding:6px 8px!important;border-radius:8px!important;background:#222!important;color:white!important;font-size:12px!important}
+.trackButtons button.active{background:#34e7ff!important;color:#031014!important}
+.trackVol{width:100%;margin-top:6px}
+.mStep{height:32px;border-radius:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);padding:0;margin:0}
+.mStep.on{background:linear-gradient(135deg,#33f0ff,#b388ff);box-shadow:0 0 14px rgba(71,224,255,.35)}
+.mStep.playing{outline:3px solid rgba(255,255,255,.65)}
+.barMarker{box-shadow:inset 2px 0 rgba(255,255,255,.25)}
+.sampleInput{font-size:11px!important;padding:6px!important;margin-top:6px!important}
+@media(max-width:620px){.transportBar{grid-template-columns:repeat(2,1fr)}.trackToolbar{grid-template-columns:1fr}.multiTrack{grid-template-columns:150px repeat(64,24px);min-width:1720px}.mStep{height:28px}.trackHead{font-size:12px}}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -143,22 +177,51 @@ textarea{min-height:120px;resize:vertical}button{background:var(--accent);color:
     </section>
 
     <section id="beat" class="page beatStudio">
-      <div class="card studioCard">
-        <div class="sectionKicker">BANDLAB-STYLE STUDIO</div>
-        <h2>비트 메이커</h2>
-        <p>16칸 찍어서 바로 비트 만들기. PLAY 전에 아무 칸이나 한 번 눌러서 소리 켜기.</p>
-
-        <div class="beatControls">
-          <button id="playBeatBtn">▶ PLAY</button>
-          <button id="stopBeatBtn">■ STOP</button>
-          <button id="randomBeatBtn">랜덤 비트</button>
-          <button id="clearBeatBtn">초기화</button>
+      <div class="card studioCard bandlabStudio">
+        <div class="studioTopbar">
+          <div>
+            <div class="sectionKicker">BANDLAB-STYLE STUDIO V2</div>
+            <h2>멀티트랙 비트 메이커</h2>
+          </div>
+          <div class="studioMini">
+            <span>BPM <b id="beatBpmText">120</b></span>
+            <span>64 STEPS</span>
+          </div>
         </div>
 
-        <label>BPM: <span id="beatBpmText">120</span></label>
-        <input id="beatMakerBpm" type="range" min="60" max="190" value="120">
+        <div class="transportBar">
+          <button id="playBeatBtn">▶ PLAY</button>
+          <button id="stopBeatBtn">■ STOP</button>
+          <button id="randomBeatBtn">랜덤</button>
+          <button id="clearBeatBtn">초기화</button>
+          <button id="saveBeatBtn">저장</button>
+          <button id="loadBeatBtn">불러오기</button>
+        </div>
 
-        <div id="beatSequencer"></div>
+        <div class="bpmRow">
+          <label>BPM</label>
+          <input id="beatMakerBpm" type="range" min="60" max="190" value="120">
+        </div>
+
+        <div class="trackToolbar">
+          <input id="newTrackName" placeholder="새 트랙 이름 예: Vocal, Piano, 808">
+          <button id="addTrackBtn">+ 트랙 추가</button>
+        </div>
+
+        <div class="timelineWrap">
+          <div id="beatSequencer"></div>
+        </div>
+
+        <div class="beatToolPanel">
+          <h3>녹음해서 트랙에 추가</h3>
+          <p>마이크 권한을 허용하면 녹음 가능. 정지하면 Recording 트랙으로 추가됨.</p>
+          <div class="transportBar">
+            <button id="startRecordBtn">● 녹음 시작</button>
+            <button id="stopRecordBtn">■ 녹음 정지</button>
+          </div>
+          <audio id="recordedAudio" controls class="hidden"></audio>
+          <p id="recordStatus" class="smallGuide">아직 녹음 없음.</p>
+        </div>
       </div>
 
       <div class="card studioCard">
@@ -277,7 +340,6 @@ textarea{min-height:120px;resize:vertical}button{background:var(--accent);color:
     <div id="movieDetailContent"></div>
   </div>
 </div>
-
 <script>
 let profiles = JSON.parse(localStorage.getItem("hobby_profiles") || "[]");
 let posts = JSON.parse(localStorage.getItem("hobby_posts") || "[]");
@@ -309,13 +371,6 @@ const beatTitle = $("beatTitle");
 const beatGenre = $("beatGenre");
 const beatBody = $("beatBody");
 const beatPostBtn = $("beatPostBtn");
-const beatSequencer = $("beatSequencer");
-const playBeatBtn = $("playBeatBtn");
-const stopBeatBtn = $("stopBeatBtn");
-const randomBeatBtn = $("randomBeatBtn");
-const clearBeatBtn = $("clearBeatBtn");
-const beatMakerBpm = $("beatMakerBpm");
-const beatBpmText = $("beatBpmText");
 
 const movieSearchInput = $("movieSearchInput");
 const movieSearchBtn = $("movieSearchBtn");
@@ -431,7 +486,7 @@ comicImage.onchange = () => {
   reader.readAsDataURL(file);
 };
 
-function addPost(type, title, info, score, body, image, poster, movieData) {
+function addPost(type, title, info, score, body, image, poster, movieData, audio) {
   if (!currentProfile() || currentProfile() === "익명") return alert("프로필을 먼저 만들어줘");
   if (!title.trim()) return alert("제목을 입력해줘");
   if (!body.trim()) return alert("내용을 입력해줘");
@@ -444,6 +499,7 @@ function addPost(type, title, info, score, body, image, poster, movieData) {
     score: score ? String(score).trim() : "",
     body: body.trim(),
     image: image || "",
+    audio: audio || "",
     poster: poster || "",
     movieData: movieData || null,
     likes: 0,
@@ -458,7 +514,7 @@ beatPostBtn.onclick = () => {
   const patternText = getPatternText();
   const info = [beatGenre.value, beatMakerBpm.value + " BPM"].filter(Boolean).join(" · ");
   const body = beatBody.value + "\n\n[패턴]\n" + patternText;
-  addPost("beat", beatTitle.value, info, "", body, "");
+  addPost("beat", beatTitle.value, info, "", body, "", "", null, recordedDataUrl);
   beatTitle.value = beatGenre.value = beatBody.value = "";
 };
 
@@ -512,6 +568,7 @@ function postHtml(post) {
   const poster = post.poster ? `<img class="moviePosterInPost" onclick="openMovieDetail(${post.id})" src="${escapeHtml(post.poster)}">` : "";
   const score = post.score ? `<p><b>평점:</b> ${escapeHtml(post.score)}/10</p>` : "";
   const info = post.info ? `<p><b>정보:</b> ${escapeHtml(post.info)}</p>` : "";
+  const audio = post.audio ? `<audio controls src="${post.audio}" style="width:100%;margin:10px 0"></audio>` : "";
   const comments = post.comments.map((c) => `<div class="comment"><b>${escapeHtml(c.profile)}</b>: ${escapeHtml(c.text)}</div>`).join("");
   return `
     <div class="post post-${post.type}">
@@ -522,6 +579,7 @@ function postHtml(post) {
       ${score}
       ${poster}
       ${img}
+      ${audio}
       <p>${escapeHtml(post.body).replaceAll("\n", "<br>")}</p>
       <div class="actions">
         <button onclick="likePost(${post.id})">좋아요 ${post.likes}</button>
@@ -659,81 +717,132 @@ movieSearchInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") searchMovies();
 });
 
-/* 16-step beat maker */
-const drumNames = ["KICK", "SNARE", "HAT", "808"];
-const stepCount = 16;
-let beatPattern = drumNames.map(() => Array(stepCount).fill(false));
+/* multitrack beat maker v2 */
+const stepCount = 64;
 let currentStep = 0;
 let beatTimer = null;
 let audioCtx = null;
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordedDataUrl = "";
+let recordedBlobUrl = "";
+
+let tracks = [
+  { id: Date.now()+1, name:"Pads", type:"synth", pattern:Array(stepCount).fill(false), volume:.7, mute:false, solo:false, sample:null, audioUrl:"" },
+  { id: Date.now()+2, name:"Chords", type:"synth", pattern:Array(stepCount).fill(false), volume:.65, mute:false, solo:false, sample:null, audioUrl:"" },
+  { id: Date.now()+3, name:"Bass", type:"bass", pattern:Array(stepCount).fill(false), volume:.8, mute:false, solo:false, sample:null, audioUrl:"" },
+  { id: Date.now()+4, name:"Drums", type:"drum", pattern:Array(stepCount).fill(false), volume:.85, mute:false, solo:false, sample:null, audioUrl:"" }
+];
+
+const beatSequencer = $("beatSequencer");
+const playBeatBtn = $("playBeatBtn");
+const stopBeatBtn = $("stopBeatBtn");
+const randomBeatBtn = $("randomBeatBtn");
+const clearBeatBtn = $("clearBeatBtn");
+const saveBeatBtn = $("saveBeatBtn");
+const loadBeatBtn = $("loadBeatBtn");
+const addTrackBtn = $("addTrackBtn");
+const newTrackName = $("newTrackName");
+const beatMakerBpm = $("beatMakerBpm");
+const beatBpmText = $("beatBpmText");
+const startRecordBtn = $("startRecordBtn");
+const stopRecordBtn = $("stopRecordBtn");
+const recordedAudio = $("recordedAudio");
+const recordStatus = $("recordStatus");
 
 function initAudio() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === "suspended") audioCtx.resume();
 }
-function playDrum(row) {
+
+function playTrack(track, step=0) {
   initAudio();
-  const type = drumNames[row];
+  const soloOn = tracks.some(t => t.solo);
+  if (track.mute) return;
+  if (soloOn && !track.solo) return;
+
+  if (track.sample) {
+    const source = audioCtx.createBufferSource();
+    const gain = audioCtx.createGain();
+    source.buffer = track.sample;
+    gain.gain.value = track.volume;
+    source.connect(gain);
+    gain.connect(audioCtx.destination);
+    source.start();
+    return;
+  }
+
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   osc.connect(gain);
   gain.connect(audioCtx.destination);
   const now = audioCtx.currentTime;
-  if (type === "KICK") {
+  gain.gain.setValueAtTime(track.volume, now);
+
+  if (track.type === "bass") {
+    const notes = [45, 55, 50, 62];
+    osc.frequency.setValueAtTime(notes[Math.floor(step/16)%4], now);
+    osc.frequency.exponentialRampToValueAtTime(35, now + .35);
+    gain.gain.exponentialRampToValueAtTime(.01, now + .45);
+  } else if (track.type === "drum") {
     osc.frequency.setValueAtTime(130, now);
-    osc.frequency.exponentialRampToValueAtTime(45, now + 0.13);
-    gain.gain.setValueAtTime(0.9, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
-  } else if (type === "SNARE") {
+    osc.frequency.exponentialRampToValueAtTime(45, now + .12);
+    gain.gain.exponentialRampToValueAtTime(.01, now + .16);
+  } else {
     osc.type = "triangle";
-    osc.frequency.setValueAtTime(230, now);
-    gain.gain.setValueAtTime(0.45, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-  } else if (type === "HAT") {
-    osc.type = "square";
-    osc.frequency.setValueAtTime(8000, now);
-    gain.gain.setValueAtTime(0.16, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
-  } else if (type === "808") {
-    osc.frequency.setValueAtTime(58, now);
-    osc.frequency.exponentialRampToValueAtTime(38, now + 0.38);
-    gain.gain.setValueAtTime(0.75, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+    const notes = [220, 246, 261, 329, 392];
+    osc.frequency.setValueAtTime(notes[(step + track.name.length) % notes.length], now);
+    gain.gain.exponentialRampToValueAtTime(.01, now + .28);
   }
   osc.start(now);
-  osc.stop(now + 0.5);
+  osc.stop(now + .5);
 }
+
 function renderBeatMaker() {
   beatSequencer.innerHTML = "";
-  drumNames.forEach((name, row) => {
-    const track = document.createElement("div");
-    track.className = "beatTrack";
-    const label = document.createElement("div");
-    label.className = "beatName";
-    label.textContent = name;
-    track.appendChild(label);
+  tracks.forEach((track, row) => {
+    const wrap = document.createElement("div");
+    wrap.className = "multiTrack";
+
+    const head = document.createElement("div");
+    head.className = "trackHead";
+    head.innerHTML = `
+      <b>${escapeHtml(track.name)}</b>
+      <div class="trackButtons">
+        <button onclick="toggleTrackMute(${row})" class="${track.mute ? "active" : ""}">M</button>
+        <button onclick="toggleTrackSolo(${row})" class="${track.solo ? "active" : ""}">S</button>
+        <button onclick="deleteTrack(${row})">삭제</button>
+      </div>
+      <input class="trackVol" type="range" min="0" max="1" step="0.01" value="${track.volume}" oninput="setTrackVolume(${row}, this.value)">
+      <input class="sampleInput" type="file" accept="audio/*" onchange="loadTrackSample(event, ${row})">
+    `;
+    wrap.appendChild(head);
+
     for (let col = 0; col < stepCount; col++) {
       const btn = document.createElement("button");
-      btn.className = "beatStep";
-      if (beatPattern[row][col]) btn.classList.add("on");
+      btn.className = "mStep";
+      if (track.pattern[col]) btn.classList.add("on");
       if (col === currentStep) btn.classList.add("playing");
+      if (col % 16 === 0) btn.classList.add("barMarker");
       btn.onclick = () => {
-        beatPattern[row][col] = !beatPattern[row][col];
-        playDrum(row);
+        track.pattern[col] = !track.pattern[col];
+        playTrack(track, col);
         renderBeatMaker();
       };
-      track.appendChild(btn);
+      wrap.appendChild(btn);
     }
-    beatSequencer.appendChild(track);
+    beatSequencer.appendChild(wrap);
   });
 }
+
 function beatTick() {
-  drumNames.forEach((_, row) => {
-    if (beatPattern[row][currentStep]) playDrum(row);
+  tracks.forEach(track => {
+    if (track.pattern[currentStep]) playTrack(track, currentStep);
   });
   currentStep = (currentStep + 1) % stepCount;
   renderBeatMaker();
 }
+
 function startBeat() {
   initAudio();
   stopBeat();
@@ -748,35 +857,126 @@ function stopBeat() {
   renderBeatMaker();
 }
 function randomBeat() {
-  beatPattern = drumNames.map((name) =>
-    Array.from({ length: stepCount }, (_, i) => {
-      if (name === "KICK") return i % 4 === 0 || Math.random() > 0.88;
-      if (name === "SNARE") return i === 4 || i === 12;
-      if (name === "HAT") return Math.random() > 0.45;
-      if (name === "808") return Math.random() > 0.78;
-      return false;
-    })
-  );
+  tracks.forEach((t, row) => {
+    t.pattern = Array.from({length: stepCount}, (_, i) => {
+      if (t.type === "drum") return i % 16 === 0 || i % 16 === 8 || Math.random() > .92;
+      if (t.type === "bass") return i % 8 === 0 || Math.random() > .95;
+      return i % 16 === row * 2 || Math.random() > .96;
+    });
+  });
   renderBeatMaker();
 }
 function clearBeat() {
-  beatPattern = drumNames.map(() => Array(stepCount).fill(false));
+  tracks.forEach(t => t.pattern = Array(stepCount).fill(false));
   renderBeatMaker();
 }
-function getPatternText() {
-  return drumNames.map((name, row) => {
-    const line = beatPattern[row].map((on) => on ? "■" : "□").join("");
-    return name + " " + line;
-  }).join("\n");
+function addTrack(name, type="synth", audioUrl="") {
+  tracks.push({ id: Date.now(), name: name || "New Track", type, pattern:Array(stepCount).fill(false), volume:.75, mute:false, solo:false, sample:null, audioUrl });
+  renderBeatMaker();
 }
+function deleteTrack(row) {
+  if (tracks.length <= 1) return alert("트랙은 최소 1개 필요해.");
+  tracks.splice(row,1);
+  renderBeatMaker();
+}
+function toggleTrackMute(row){ tracks[row].mute = !tracks[row].mute; renderBeatMaker(); }
+function toggleTrackSolo(row){ tracks[row].solo = !tracks[row].solo; renderBeatMaker(); }
+function setTrackVolume(row, value){ tracks[row].volume = Number(value); }
+
+async function loadTrackSample(event, row) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  initAudio();
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = await audioCtx.decodeAudioData(arrayBuffer);
+    tracks[row].sample = buffer;
+    alert(tracks[row].name + " 샘플 적용됨");
+  } catch (err) {
+    alert("이 오디오 파일은 읽지 못했어. mp3/wav/m4a로 다시 시도해줘.");
+  }
+}
+
+function getPatternText() {
+  return tracks.map(t => t.name + " " + t.pattern.map(on => on ? "■" : "□").join("")).join("\\n");
+}
+function saveBeat() {
+  const safeTracks = tracks.map(t => ({...t, sample:null}));
+  localStorage.setItem("savedBeatV2", JSON.stringify({tracks:safeTracks, bpm:beatMakerBpm.value, savedAt:new Date().toLocaleString()}));
+  alert("비트 저장 완료");
+}
+function loadBeat() {
+  const data = localStorage.getItem("savedBeatV2");
+  if (!data) return alert("저장된 비트가 없어.");
+  const parsed = JSON.parse(data);
+  tracks = parsed.tracks.map(t => ({...t, sample:null}));
+  beatMakerBpm.value = parsed.bpm || 120;
+  beatBpmText.textContent = beatMakerBpm.value;
+  renderBeatMaker();
+  alert("비트 불러오기 완료");
+}
+
+async function startRecording() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert("이 브라우저에서는 녹음 기능이 지원되지 않을 수 있어.");
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recordedChunks = [];
+    const options = MediaRecorder.isTypeSupported("audio/webm") ? {mimeType:"audio/webm"} : {};
+    mediaRecorder = new MediaRecorder(stream, options);
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: "audio/webm" });
+      if (recordedBlobUrl) URL.revokeObjectURL(recordedBlobUrl);
+      recordedBlobUrl = URL.createObjectURL(blob);
+      recordedAudio.src = recordedBlobUrl;
+      recordedAudio.classList.remove("hidden");
+      const reader = new FileReader();
+      reader.onload = async () => {
+        recordedDataUrl = reader.result;
+        recordStatus.textContent = "녹음 완료. Recording 트랙이 추가됨.";
+        addTrack("Recording", "sample", recordedDataUrl);
+        try {
+          initAudio();
+          const ab = await blob.arrayBuffer();
+          tracks[tracks.length-1].sample = await audioCtx.decodeAudioData(ab);
+        } catch(e) {}
+        renderBeatMaker();
+      };
+      reader.readAsDataURL(blob);
+      stream.getTracks().forEach(track => track.stop());
+      startRecordBtn.classList.remove("recordingPulse");
+    };
+    mediaRecorder.start();
+    recordStatus.textContent = "녹음 중...";
+    startRecordBtn.classList.add("recordingPulse");
+  } catch (err) {
+    alert("마이크 권한이 필요하거나 이 브라우저에서 녹음이 막혔어. Safari 주소창 권한에서 마이크 허용 확인.");
+  }
+}
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
+  else alert("진행 중인 녹음이 없어.");
+}
+
 playBeatBtn.onclick = startBeat;
 stopBeatBtn.onclick = stopBeat;
 randomBeatBtn.onclick = randomBeat;
 clearBeatBtn.onclick = clearBeat;
-beatMakerBpm.oninput = () => {
-  beatBpmText.textContent = beatMakerBpm.value;
-  if (beatTimer) startBeat();
-};
+saveBeatBtn.onclick = saveBeat;
+loadBeatBtn.onclick = loadBeat;
+addTrackBtn.onclick = () => { addTrack(newTrackName.value.trim() || "New Track"); newTrackName.value = ""; };
+startRecordBtn.onclick = startRecording;
+stopRecordBtn.onclick = stopRecording;
+beatMakerBpm.oninput = () => { beatBpmText.textContent = beatMakerBpm.value; if (beatTimer) startBeat(); };
+
+window.toggleTrackMute = toggleTrackMute;
+window.toggleTrackSolo = toggleTrackSolo;
+window.deleteTrack = deleteTrack;
+window.setTrackVolume = setTrackVolume;
+window.loadTrackSample = loadTrackSample;
 
 
 /* movie poster detail + rating stats */
@@ -883,6 +1083,94 @@ movieDetailOverlay.addEventListener("click", (e) => {
   if (e.target === movieDetailOverlay) movieDetailOverlay.classList.add("hidden");
 });
 
+
+
+/* beat sample upload + voice recording */
+function renderSampleUploadPanel() {
+  sampleUploadPanel.innerHTML = drumNames.map((name, row) => `
+    <div class="sampleRow">
+      <b>${name}</b>
+      <input type="file" accept="audio/*" onchange="loadDrumSample(event, ${row})">
+    </div>
+  `).join("");
+}
+
+async function loadDrumSample(event, row) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  initAudio();
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = await audioCtx.decodeAudioData(arrayBuffer);
+    drumSamples[row] = buffer;
+    alert(drumNames[row] + " 샘플 적용됨");
+  } catch (err) {
+    alert("이 오디오 파일은 브라우저에서 읽지 못했어. mp3/wav/m4a로 다시 시도해줘.");
+  }
+}
+
+function resetSamples() {
+  drumSamples = {};
+    alert("기본 드럼으로 복구됨");
+}
+
+async function startRecording() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert("이 브라우저에서는 녹음 기능이 지원되지 않을 수 있어.");
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) recordedChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: "audio/webm" });
+
+      if (recordedBlobUrl) URL.revokeObjectURL(recordedBlobUrl);
+      recordedBlobUrl = URL.createObjectURL(blob);
+      recordedAudio.src = recordedBlobUrl;
+      recordedAudio.classList.remove("hidden");
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        recordedDataUrl = reader.result;
+        recordStatus.textContent = "녹음 완료. 비트 게시하면 녹음 파일도 같이 저장됨.";
+      };
+      reader.readAsDataURL(blob);
+
+      stream.getTracks().forEach((track) => track.stop());
+      startRecordBtn.classList.remove("recordingPulse");
+    };
+
+    mediaRecorder.start();
+    recordStatus.textContent = "녹음 중...";
+    startRecordBtn.classList.add("recordingPulse");
+  } catch (err) {
+    alert("마이크 권한이 필요해. Safari/Chrome에서 마이크 허용을 눌러줘.");
+  }
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state === "recording") {
+    mediaRecorder.stop();
+  } else {
+    alert("진행 중인 녹음이 없어.");
+  }
+}
+
+resetSamplesBtn.onclick = resetSamples;
+startRecordBtn.onclick = startRecording;
+stopRecordBtn.onclick = stopRecording;
+
+window.loadDrumSample = loadDrumSample;
 
 document.querySelectorAll(".themePreset").forEach((btn) => {
   btn.onclick = () => applyTheme(themePresets[btn.dataset.theme]);
